@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1060513851146",
+    "firebase_url": "https://imagetextrecognition-44288.firebaseio.com",
+    "project_id": "imagetextrecognition-44288",
+    "storage_bucket": "imagetextrecognition-44288.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1060513851146:android:b1d113e4349948e715fcf3",
+        "android_client_info": {
+          "package_name": "com.imagetextrecognition"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1060513851146-049skmcj24adkubv6vs6ck1pkotcgjln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuUAv4c6jpSvlI4PtehRcW9CHrHRGP9xE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1060513851146-049skmcj24adkubv6vs6ck1pkotcgjln.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1060513851146-mom16qf0frnsrqu2oub359ai0m0dd8po.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.imagetextrecognition"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

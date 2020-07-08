@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, Modal, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { Button, ThemeProvider, Header } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Entypo';
+// import Icon from 'react-native-vector-icons/Entypo';
 
 
-const myIcon = <Icon name="menu" size={30} color="white" />;
+// const myIcon = <Icon name="menu" size={30} color="white" />;
 
 export default class MainScreen extends Component {
     constructor(props) {
@@ -23,11 +23,11 @@ export default class MainScreen extends Component {
     render() {
       return (
         <SafeAreaView style={styles.safeArea}> 
-           <Header
+           {/* <Header
                 leftComponent={<TouchableOpacity onPress={this.modalToggle}>{myIcon}</TouchableOpacity>}
                 centerComponent={{ text: 'Text Recognition', style: { color: '#fff', fontSize: 18 } }}
                 rightComponent={{ icon: 'home', color: '#fff' }}
-            />
+            /> */}
 
             <Modal
               animationType="fade"
@@ -57,9 +57,15 @@ export default class MainScreen extends Component {
                 <Text>Hello</Text>
                 <TouchableHighlight
                   onPress={this.modalToggle}>
-                  <Text>Toggle Modal</Text>
+                  <Text>Toggle Modal button</Text>
                 </TouchableHighlight>
+
+                <TouchableOpacity onPress={() => {this.props.navigation.navigate('Scan')}}>
+                  <Text>Scanner Screen</Text>
+                </TouchableOpacity>
             </View>
+
+
         </SafeAreaView>
       );
     }

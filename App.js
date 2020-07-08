@@ -11,10 +11,12 @@ import 'react-native-gesture-handler';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import MainScreen from './screens/MainScreen';
+import ScannerScreen from './screens/ScannerScreen';
 
 const AppNavigator = createStackNavigator(
   {
     Home: MainScreen,
+    Scan: ScannerScreen
   },
   {
     initialRouteName: 'Home',
