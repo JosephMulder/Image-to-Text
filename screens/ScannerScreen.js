@@ -1,5 +1,5 @@
 import React, { Component, useRef } from 'react';
-import { StyleSheet, SafeAreaView, Platform, Text, Modal, View, TouchableOpacity, Image, StatusBar, AsyncStorage, DeviceEventEmitter, NativeModules, Alert, ToastAndroid, ScrollView, Button, Dimensions, Animated, PanResponder } from 'react-native';
+import { StyleSheet, SafeAreaView, Platform, Text, Modal, View, TouchableOpacity, Image, StatusBar, AsyncStorage, DeviceEventEmitter, NativeModules, Alert, ToastAndroid, ScrollView, Button, Dimensions, Animated, PanResponder, PixelRatio } from 'react-native';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icons from 'react-native-vector-icons/Fontisto';
@@ -9,15 +9,15 @@ import { RNCamera } from 'react-native-camera';
 const window = Dimensions.get("window");
 const screen = Dimensions.get("screen");
 
+
 export default class ScannerScreen extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       takeTextNow: false,
-      textFound: [],
+      textFound: [{bounds: {origin: {x: 0, y: 0}, size: {width: 0, height: 0} }, value: "" }],
       imageTaken: "",
-      keyTextArr: [],
       dimensions: {
         window,
         screen
@@ -47,6 +47,27 @@ export default class ScannerScreen extends Component {
     };
 
 
+    textRecognized = (e) => {
+      let textArr = [];
+      // let OCRJustStrings = [];
+      if (e.textBlocks) {
+        for (let i = 0; i < e.textBlocks.length;i++) {
+          if (e.textBlocks[i].components.length > 0) {
+            console.log("main", e.textBlocks[i], 'main');
+            textArr.push(e.textBlocks[i]);
+          }
+        }
+      }
+      // This filter removes duplicates of the same text.
+      // let textArrfiltered = textArr.filter((item, index) => OCRJustStrings.indexOf(item.value) === index);
+      this.setState({
+        takeTextNow: false,
+        textFound: textArr,
+      });
+    }
+
+
+
     onInputTextChange = (e, identifier) => {
       const { eventCount, target, text } = e.nativeEvent;
       this.setState({
@@ -57,154 +78,60 @@ export default class ScannerScreen extends Component {
   render() { 
     return (
       <SafeAreaView tyle={{flex: 1}}> 
-        <ScrollView>
-        <RNCamera
-          ref={(ref) => {
-            this.camera = ref;
-          }}
-          autoFocus={RNCamera.Constants.AutoFocus.on}
-          onDoubleTap={this.zoomOnImage}
-          style={styles.preview}
-          type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.off}
-          androidCameraPermissionOptions={{
-            title: 'Permission to use camera',
-            message: 'We need your permission to use your camera',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
-          androidRecordAudioPermissionOptions={{
-            title: 'Permission to use audio recording',
-            message: 'We need your permission to use your audio',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
-          onTextRecognized={(e) => {
-            if (this.state.takeTextNow) {
-                console.log(e);
-            //   this.textRecognized(e);
-            }
-          }}
-          // onGoogleVisionBarcodesDetected={({ barcodes }) => {
-          //   // console.log(barcodes, "barcode");
-          // }}
-        />
-        <View style={{ zIndex: 11, flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
-            <Text style={{ fontSize: 14 }}>SNAP</Text>
-          </TouchableOpacity>
+        {/* <ScrollView> */}
+        <View style={{height: 100, width: '100%', backgroundColor: 'white'}}>
+
+        </View>
+        <View>
+          <RNCamera
+            ref={(ref) => {
+              this.camera = ref;
+            }}
+            autoFocus={RNCamera.Constants.AutoFocus.on}
+            onDoubleTap={this.zoomOnImage}
+            style={styles.preview}
+            type={RNCamera.Constants.Type.back}
+            flashMode={RNCamera.Constants.FlashMode.off}
+            androidCameraPermissionOptions={{
+              title: 'Permission to use camera',
+              message: 'We need your permission to use your camera',
+              buttonPositive: 'Ok',
+              buttonNegative: 'Cancel',
+            }}
+            androidRecordAudioPermissionOptions={{
+              title: 'Permission to use audio recording',
+              message: 'We need your permission to use your audio',
+              buttonPositive: 'Ok',
+              buttonNegative: 'Cancel',
+            }}
+            onTextRecognized={(e) => {
+              // if (this.state.takeTextNow) {
+                  console.log(e);
+                this.textRecognized(e);
+              // }
+            }}
+
+          />
+        </View>
+        <View style={{height: 100,width: '100%', flexDirection: 'row', justifyContent: 'center', backgroundColor: 'white' }}>
           <TouchableOpacity 
             onPress={this.takeText} 
-            style={styles.capture}
-            >
-            <Text style={{ fontSize: 14 }}>OCR</Text>
+          // onPress={this.takePicture.bind(this)} 
+          style={styles.capture}>
+            <Text style={{ fontSize: 14 }}> SNAP </Text>
           </TouchableOpacity>
         </View>
 
-          <View>
 
-            {this.state.imageTaken !== "" 
-              ? 
-              <ImageZoom cropWidth={window.width}
-                  cropHeight={window.width}
-                  imageWidth={window.width}
-                  imageHeight={window.width}>
-                <Image style={{width:window.width, height:window.width}}
-                  source={{uri: this.state.imageTaken}}/>
-              </ImageZoom>
-              :
-              <View></View>
-            }
-          </View>
-          <View style={styles.detectedText}>
 
-                <Input
-                  label="Serial Number"
-                  placeholder="serial number"
-                  value={this.state.sn ? this.state.sn : ""}
-                  onChange={(e) => this.onInputTextChange(e, "sn")}
-                  leftIconContainerStyle={styles.leftIcon}
-                  leftIcon={
-                    <Icons
-                      name='locked'
-                      size={24}
-                      color='#687582'
-                    />
-                  }
-                />
-  
-                <Input
-                  label="EAN"
-                  placeholder="EAN"
-                  value={this.state.ean ? this.state.ean : ""}
-                  onChange={(e) => this.onInputTextChange(e, "ean")}
-                  leftIconContainerStyle={styles.leftIcon}
-                  leftIcon={
-                    <Icons
-                      name='locked'
-                      size={24}
-                      color='#687582'
-                    />
-                  }
-                />
-      
-                <Input
-                  label="UPC"
-                  placeholder="UPC"
-                  value={this.state.upc ? this.state.upc : ""}
-                  onChange={(e) => this.onInputTextChange(e, "upc")}
-                  leftIconContainerStyle={styles.leftIcon}
-                  leftIcon={
-                    <Icons
-                      name='locked'
-                      size={24}
-                      color='#687582'
-                    />
-                  }
-                />
+ 
+           {this.state.textFound.map((text, index) => (
+             <View style={{ position: 'absolute', zIndex: 15, top: text.bounds.origin.y +100, left: text.bounds.origin.x, width: text.bounds.size.width, height: text.bounds.size.height, backgroundColor: 'purple', opacity:.7 }} key={index}>
+               <Text style={{fontSize: 8, color: "#39ff14"}} selectable>{text.value}</Text>
+             </View>
+           ))}
 
-                <Input
-                  label="Model"
-                  placeholder="model"
-                  value={this.state.model ? this.state.model : ""}
-                  onChange={(e) => this.onInputTextChange(e, "model")}
-                  leftIconContainerStyle={styles.leftIcon}
-                  leftIcon={
-                    <Icons
-                      name='locked'
-                      size={24}
-                      color='#687582'
-                    />
-                  }
-                />
-
-                <Input
-                  label="Mac Adresss"
-                  placeholder="mac"
-                  value={this.state.mac ? this.state.mac : ""}
-                  onChange={(e) => this.onInputTextChange(e, "mac")}
-                  leftIconContainerStyle={styles.leftIcon}
-                  leftIcon={
-                    <Icons
-                      name='locked'
-                      size={24}
-                      color='#687582'
-                    />
-                  }
-                />
-    
-          </View>
-          {this.state.textFound.map((text, index) => (
-            <View style={styles.detectedText} key={index}>
-              <Text selectable>{text}</Text>
-            </View>
-          ))}
-          {this.state.keyTextArr.map((obj, index) => (
-            <View style={styles.detectedText} key={index}>
-              <Text selectable>{obj.term[0]}: {obj.term[1]}</Text>
-            </View>
-          ))}
-        </ScrollView>
+        {/* </ScrollView> */}
       </SafeAreaView>
     );
   }
@@ -218,9 +145,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   preview: {
-    height: window.width,
+    height: window.height -200,
     width: window.width,
     alignItems: 'center',
+    justifyContent: 'center'
   },
   capture: {
     flex: 0,
@@ -251,5 +179,9 @@ const styles = StyleSheet.create({
   },
   leftIcon: {
     paddingRight: 10,
+  },
+  textAbs: {
+    position: 'absolute',
+    zIndex: 15,
   }
 });
