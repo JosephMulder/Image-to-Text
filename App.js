@@ -13,21 +13,21 @@ import { createStackNavigator } from 'react-navigation-stack';
 import MainScreen from './screens/MainScreen';
 import ScannerScreen from './screens/ScannerScreen';
 
-const AppNavigator = createStackNavigator(
-  {
-    Home: MainScreen,
-    Scan: ScannerScreen
-  },
-  {
-    initialRouteName: 'Home',
-    headerMode: 'none'
-  }
-);
+// const AppNavigator = createStackNavigator(
+//   {
+//     Home: MainScreen,
+//     Scan: ScannerScreen
+//   },
+//   {
+//     initialRouteName: 'Home',
+//     headerMode: 'none'
+//   }
+// );
 
-const AppContainer = createAppContainer(AppNavigator);
+// const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends React.Component {
   render() {
-    return <AppContainer />;
+    return <ScannerScreen />;
   }
 }

@@ -16,20 +16,37 @@ export default class ScannerScreen extends Component {
 
     this.state = {
       takeTextNow: false,
+      selectedComponent: "camera",
       textFound: [{bounds: {origin: {x: 0, y: 0}, size: {width: 0, height: 0} }, value: "" }],
+      savedTextFound: [{bounds: {origin: {x: 0, y: 0}, size: {width: 0, height: 0} }, value: "" }],
       imageTaken: "",
       dimensions: {
         window,
         screen
+      },
+      cameraPreview: {
+        height: window.height -200,
+        width: window.width,
+        alignItems: 'center',
+        justifyContent: 'center',
+        display: "flex"
+      },
+      OCRPreview: {
+        flex: 1,
+        backgroundColor: 'white', 
+        display: "none",
+        margin: 10
       }
     };
   }
 
   
-    takeText = () => {
+    changeMainView = () => {
       this.setState({
-        takeTextNow: true
-      });
+        cameraPreview: { ...this.state.cameraPreview, display: this.state.cameraPreview.display === "none" ? "flex" : "none" },
+        OCRPreview: { ...this.state.OCRPreview, display: this.state.OCRPreview.display === "none" ? "flex" : "none"  },
+        savedTextFound: this.state.textFound
+      }, () => console.log(this.state.cameraPreview))
     }
     static navigationOptions = {
       title: 'Scan',
@@ -46,22 +63,16 @@ export default class ScannerScreen extends Component {
       }
     };
 
-
     textRecognized = (e) => {
       let textArr = [];
-      // let OCRJustStrings = [];
       if (e.textBlocks) {
         for (let i = 0; i < e.textBlocks.length;i++) {
           if (e.textBlocks[i].components.length > 0) {
-            console.log("main", e.textBlocks[i], 'main');
             textArr.push(e.textBlocks[i]);
           }
         }
       }
-      // This filter removes duplicates of the same text.
-      // let textArrfiltered = textArr.filter((item, index) => OCRJustStrings.indexOf(item.value) === index);
       this.setState({
-        takeTextNow: false,
         textFound: textArr,
       });
     }
@@ -77,19 +88,17 @@ export default class ScannerScreen extends Component {
 
   render() { 
     return (
-      <SafeAreaView tyle={{flex: 1}}> 
-        {/* <ScrollView> */}
-        <View style={{height: 100, width: '100%', backgroundColor: 'white'}}>
+      <SafeAreaView style={{flex: 1}}>
+        <View style={{height: 100, width: '100%', backgroundColor: 'black'}}>
 
         </View>
-        <View>
+          
           <RNCamera
             ref={(ref) => {
               this.camera = ref;
             }}
             autoFocus={RNCamera.Constants.AutoFocus.on}
-            onDoubleTap={this.zoomOnImage}
-            style={styles.preview}
+            style={this.state.cameraPreview}
             type={RNCamera.Constants.Type.back}
             flashMode={RNCamera.Constants.FlashMode.off}
             androidCameraPermissionOptions={{
@@ -105,20 +114,22 @@ export default class ScannerScreen extends Component {
               buttonNegative: 'Cancel',
             }}
             onTextRecognized={(e) => {
-              // if (this.state.takeTextNow) {
-                  console.log(e);
-                this.textRecognized(e);
-              // }
+              this.textRecognized(e);
             }}
-
           />
-        </View>
-        <View style={{height: 100,width: '100%', flexDirection: 'row', justifyContent: 'center', backgroundColor: 'white' }}>
+        <ScrollView style={this.state.OCRPreview}>
+            <Text selectable>
+            {this.state.savedTextFound.map((text, index) => (
+               <Text key={index} style={{fontSize: 12, color: "black"}} selectable>{text.value} {"\n"}</Text>
+           ))}
+           </Text>
+        </ScrollView>
+
+        <View style={{height: 100,width: '100%', flexDirection: 'row', justifyContent: 'center', backgroundColor: 'black' }}>
           <TouchableOpacity 
-            onPress={this.takeText} 
-          // onPress={this.takePicture.bind(this)} 
-          style={styles.capture}>
-            <Text style={{ fontSize: 14 }}> SNAP </Text>
+            onPress={this.changeMainView} 
+            style={styles.capture}>
+            <Text style={{ fontSize: 14 }}> Get Text </Text>
           </TouchableOpacity>
         </View>
 
@@ -127,11 +138,10 @@ export default class ScannerScreen extends Component {
  
            {this.state.textFound.map((text, index) => (
              <View style={{ position: 'absolute', zIndex: 15, top: text.bounds.origin.y +100, left: text.bounds.origin.x, width: text.bounds.size.width, height: text.bounds.size.height, backgroundColor: 'purple', opacity:.7 }} key={index}>
-               <Text style={{fontSize: 8, color: "#39ff14"}} selectable>{text.value}</Text>
+               <Text style={{fontSize: 8, color: "#39ff14"}} >{text.value}</Text>
              </View>
            ))}
 
-        {/* </ScrollView> */}
       </SafeAreaView>
     );
   }
@@ -148,10 +158,10 @@ const styles = StyleSheet.create({
     height: window.height -200,
     width: window.width,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    display: "none"
   },
   capture: {
-    flex: 0,
     backgroundColor: '#fff',
     borderRadius: 5,
     padding: 15,
