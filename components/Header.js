@@ -38,7 +38,7 @@ export default Header = (props) => {
 
 const styles = StyleSheet.create({
     header: {
-        height: 100, 
+        height: 70, 
         width: '100%', 
         backgroundColor: 'black', 
         flexDirection: 'row', 
