@@ -1,5 +1,5 @@
 import React, { Component, useRef } from 'react';
-import { SafeAreaView, Text, View, Dimensions, Linking } from 'react-native';
+import { SafeAreaView, Text, View, Dimensions, Linking, StatusBar } from 'react-native';
 import Clipboard from "@react-native-community/clipboard";
 import admob, { MaxAdContentRating, BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 import Header from './Header.js';
@@ -21,8 +21,9 @@ export default class MainScreen extends Component {
       textFound:      [ { bounds: { origin: { x: 0, y: 0 }, size: { width: 0, height:  0} }, value: "" } ],
       savedTextFound: [ { bounds: { origin: { x: 0, y: 0 }, size: { width: 0, height:  0} }, value: "" } ],
       cameraPreview: {
-        height: window.height -200,
-        width: window.width,
+        // height: window.height -200,
+        // width: window.width,
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         display: "flex"
@@ -98,7 +99,7 @@ export default class MainScreen extends Component {
     let cameraBtnText = cameraShowing ? "Get Text" : "Go Back";
 
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
 
           <Header size={window.width / 16} copyToClipBoard={this.copyToClipBoard} emailMessage={this.emailMessage} toggleTorchMode={this.toggleTorchMode}/>
           
@@ -114,11 +115,11 @@ export default class MainScreen extends Component {
                 }}
             />  
 
-          {textFound.map((text, index) => (//This is the absolute positioned text for the live updates on the OCR text captured
+          {cameraShowing ? textFound.map((text, index) => (//This is the absolute positioned text for the live updates on the OCR text captured
             <View style={{ position: 'absolute', zIndex: 15, top: text.bounds.origin.y +70, left: text.bounds.origin.x, width: text.bounds.size.width, height: text.bounds.size.height, backgroundColor: 'purple', opacity:.7 }} key={index}>
               <Text style={{fontSize: 8, color: "#39ff14"}} >{text.value}</Text>
             </View>
-           ))}
+           )): <></> }
 
       </SafeAreaView>
     );

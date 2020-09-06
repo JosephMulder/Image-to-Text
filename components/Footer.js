@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
         padding: 15,
         paddingHorizontal: 20,
         alignSelf: 'center',
-        margin: 20,
     },
     captureBtnText: {
         fontSize: 14
