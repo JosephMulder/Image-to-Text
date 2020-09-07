@@ -1,7 +1,9 @@
 import React, { Component, useRef } from 'react';
 import { SafeAreaView, Text, View, Dimensions, Linking, ToastAndroid, Alert } from 'react-native';
-import Clipboard from "@react-native-community/clipboard";
 import admob, { MaxAdContentRating, BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
+import Clipboard from "@react-native-community/clipboard";
+import Orientation from 'react-native-orientation';
+
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -36,6 +38,7 @@ export default class MainScreen extends Component {
   }
 
   componentDidMount = () => {
+    Orientation.lockToPortrait();
     admob()
       .setRequestConfiguration({
         // Update all future requests suitable for parental guidance
