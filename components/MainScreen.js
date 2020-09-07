@@ -1,12 +1,12 @@
 import React, { Component, useRef } from 'react';
-import { SafeAreaView, Text, View, Dimensions, Linking, StatusBar } from 'react-native';
+import { SafeAreaView, Text, View, Dimensions, Linking, ToastAndroid, Alert } from 'react-native';
 import Clipboard from "@react-native-community/clipboard";
 import admob, { MaxAdContentRating, BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
 
-const fireBase = require('../firebase.json').react_native;
+const fireBase = require('../firebase.json')["react-native"];
 const firebaseId = Platform.OS === 'ios'  ? fireBase.admob_ios_app_id : fireBase.admob_android_app_id;
 const adUnitId = __DEV__ ? TestIds.BANNER : firebaseId;
 const window = Dimensions.get("window");
@@ -21,8 +21,6 @@ export default class MainScreen extends Component {
       textFound:      [ { bounds: { origin: { x: 0, y: 0 }, size: { width: 0, height:  0} }, value: "" } ],
       savedTextFound: [ { bounds: { origin: { x: 0, y: 0 }, size: { width: 0, height:  0} }, value: "" } ],
       cameraPreview: {
-        // height: window.height -200,
-        // width: window.width,
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
@@ -32,7 +30,7 @@ export default class MainScreen extends Component {
         flex: 1,
         backgroundColor: 'white', 
         display: "none",
-        margin: 10
+        padding: 10
       }
     };
   }
@@ -58,7 +56,7 @@ export default class MainScreen extends Component {
       OCRPreview: { ...OCRPreview, display: OCRPreview.display === "none" ? "flex" : "none"  },
       savedTextFound: textFound,
       cameraShowing: !cameraShowing
-    }, () => console.log(this.state.cameraPreview))
+    });
   }
 
   textRecognized = (e) => {
@@ -79,6 +77,21 @@ export default class MainScreen extends Component {
     let allOCRString = "";
     this.state.savedTextFound.forEach( ( ORC ) => { allOCRString += " " + ORC.value });
     Clipboard.setString(allOCRString);
+    if (Platform.OS === 'ios') {
+      Alert.alert(
+        "Copied to clipboard!", "",
+        [
+          { text: "OK", onPress: () => {} }
+        ],
+        { cancelable: false }
+      );
+    } else {
+      ToastAndroid.showWithGravity(
+        "Copied to clipboard!",
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER
+      );
+    }
   }
 
   emailMessage = () => {
