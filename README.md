@@ -13,6 +13,8 @@
 ## Usage
 * Place your camera over the text you want to use the Text recognition on and wait till the text is picked up over the image. After that just click the get text button and you'll be able to copy or email the text.
 
-<img src="https://i.imgur.com/bGPDYSk.jpg" />
-<img src="https://i.imgur.com/jayZwnv.jpg" />
+
+![5j2jduk](https://i.imgur.com/bGPDYSk.jpg)
+![5j2jduk](https://i.imgur.com/jayZwnv.jpg)
+
 
