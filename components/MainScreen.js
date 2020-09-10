@@ -9,7 +9,7 @@ import Main from './Main.js';
 import Footer from './Footer.js';
 
 const fireBase = require('../firebase.json')["react-native"];
-const firebaseId = Platform.OS === 'ios'  ? fireBase.admob_ios_app_id : fireBase.admob_android_app_id;
+const firebaseId = Platform.OS === 'ios'  ? fireBase.admob_ios_ad_unit_id : fireBase.admob_android_ad_unit_id;
 const adUnitId = __DEV__ ? TestIds.BANNER : firebaseId;
 const window = Dimensions.get("window");
 
@@ -128,6 +128,12 @@ export default class MainScreen extends Component {
                 size={BannerAdSize.SMART_BANNER}
                 requestOptions={{
                 requestNonPersonalizedAdsOnly: true,
+                }}
+                onAdLoaded={() => {
+                  console.log('Advert loaded');
+                }}
+                onAdFailedToLoad={(error) => {
+                  console.error('Advert failed to load: ', error);
                 }}
             />  
 
