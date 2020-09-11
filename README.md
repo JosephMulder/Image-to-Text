@@ -18,5 +18,5 @@
 ![5j2jduk](https://i.imgur.com/jayZwnv.jpg)
 
 
-## Published Links
+## Application Links
 * [Android](https://play.google.com/store/apps/details?id=com.imagetextrecognition)
